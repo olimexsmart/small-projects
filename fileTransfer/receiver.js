@@ -1,53 +1,75 @@
 const net = require("net")
 const fs = require("fs")
 const http = require("http")
+const nodeDiskInfo = require('node-disk-info'); //=> Use this when install as a dependency
+
 
 let httpServer = http.createServer((request, response) => {
-    let name = 'default'
-    let size = 0
 
+    // Collect data from POST body 
     let body = [];
     request.on('error', (err) => {
         console.error(err);
     }).on('data', (chunk) => {
         body.push(chunk);
     }).on('end', () => {
-        data = JSON.parse(Buffer.concat(body).toString())
-        name = data.filename
-        size = data.size
+        const data = JSON.parse(Buffer.concat(body).toString())
+        const name = data.filename
 
-        console.log(name + size)
-    });
+        // Check if there is enough space to receive the file
+        // TODO we need to know where we are saving the file first
+        const size = data.size
+        const disks = nodeDiskInfo.getDiskInfoSync();
 
-    let server = net.createServer()
+        // Create the server that will listen for the incoming file
+        const server = net.createServer()
 
-    server.on("connection", socket => {
-        let fileStream = fs.createWriteStream(name);
+        // Write on file received data
+        server.on("connection", socket => {
+            let fileStream = fs.createWriteStream(name);
+            let progressChecker = null
+            fileStream.on('ready', () => {
+                socket.pipe(fileStream);
 
-        socket.pipe(fileStream);
+                progressChecker = setInterval((fileStreamToCheck) => {
+                    progress = fileStreamToCheck.bytesWritten / size
+                    // This needs to be updated in GUI
+                    console.log(progress)
+                }, 200, fileStream)
+            })
 
-        socket.on("end", () => {
-            server.close(() => { console.log("\nTransfer is done!") });
+            socket.on("end", () => {
+                clearInterval(progressChecker)
+                server.close(() => { });
+            })
         })
-    })
 
-    server.on('error', error => {
-        console.log(error)
-    })
+        server.on('error', error => {
+            console.log(error)
+        })
 
-    server.listen({
-        host: 'localhost',
-        port: 0
-    }, () => {
-        port = server.address().port.toString()
-        console.log(port)
-        response.writeHead(200);
-        response.end(port);
+        server.listen({
+            host: 'localhost',
+            port: 0
+        }, () => {
+            // When the server is initialized
+            // send the HTTP response with the port choosen
+            response.writeHead(200);
+            response.end(server.address().port.toString());
+
+            // Set a callback to close server if no file were sent
+            setTimeout((serverToClose) => {
+                serverToClose.getConnections((err, count) => {
+                    if (count == 0 && serverToClose.listening)
+                        serverToClose.close()
+                })
+            }, 3000, server)
+        });
     });
-
 
 });
 
+// Bind HTTP server to a know port
 httpServer.listen({
     host: 'localhost',
     port: 11861
