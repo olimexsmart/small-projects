@@ -3,6 +3,7 @@ const fs = require("fs")
 const http = require("http")
 
 var fileName = "test.png"
+var IP = '192.168.1.149'
 
 // Preparing data to be sent
 var stats = fs.statSync(fileName)
@@ -15,7 +16,7 @@ let data = JSON.stringify({
 
 // Create HTTP POST request
 let httpClient = http.request({
-  host: 'localhost',
+  host: IP,
   port: 11861,
   method: 'POST',
   headers: {
@@ -26,7 +27,7 @@ let httpClient = http.request({
 
   // Intercept response data
   res.on('data', d => { 
-    let socket = net.connect(parseInt(d), 'localhost')
+    let socket = net.connect(parseInt(d), IP)
 
     socket.on('error', error => {
       console.log(error)
