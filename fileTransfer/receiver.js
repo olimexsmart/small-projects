@@ -49,7 +49,6 @@ let httpServer = http.createServer((request, response) => {
         })
 
         server.listen({
-            host: 'localhost',
             port: 0
         }, () => {
             // When the server is initialized
@@ -70,10 +69,7 @@ let httpServer = http.createServer((request, response) => {
 });
 
 // Bind HTTP server to a know port
-httpServer.listen({
-    host: 'localhost',
-    port: 11861
-});
+httpServer.listen(11861);
 
 
 
