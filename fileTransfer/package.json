@@ -4,6 +4,8 @@
   "description": "",
   "main": "diskInfoTest.js",
   "dependencies": {
+    "crypto-js": "^4.0.0",
+    "evilscan": "^1.7.5",
     "node-disk-info": "^1.0.4"
   },
   "devDependencies": {},
