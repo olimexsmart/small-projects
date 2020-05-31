@@ -7,16 +7,16 @@
 #include <sys/types.h>
 
 #define MAX 100
-#define PORT 8080
+#define PORT 16789
 #define SA struct sockaddr
 
-void sentFile(int sockfd)
+void sentFile(char * fileName, int sockfd)
 {
     char buff[MAX]; // for read operation from file and used to sent operation
 
     // create file
     FILE* fp;
-    fp = fopen("test.png", "r"); // open file uses both stdio and stdin header files
+    fp = fopen(fileName, "r"); // open file uses both stdio and stdin header files
         // file should be present at the program directory
 
     if (fp == NULL) {
@@ -32,7 +32,7 @@ void sentFile(int sockfd)
     printf("File Sent successfully !!! \n");
 }
 
-int main()
+int main(int argc, char **argv)
 {
     int sockfd, connfd, len; // create socket file descriptor
     struct sockaddr_in servaddr, cli; // create structure object of sockaddr_in for client and server
@@ -80,7 +80,7 @@ int main()
         printf("server acccept the client...\n");
 
     // Function for chatting between client and server
-    sentFile(connfd);
+    sentFile(argv[1], connfd);
 
     // After transfer close the socket
     close(sockfd);

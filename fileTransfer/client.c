@@ -6,15 +6,15 @@
 #include <sys/socket.h>
 
 #define MAX 100
-#define PORT 8080
+#define PORT 16789
 #define SA struct sockaddr
 
-void recvFile(int sockfd)
+void recvFile(char * fileName, int sockfd)
 {
     char buff[MAX]; // to store message from client
 
     FILE* fp;
-    fp = fopen("received.png", "w"); // stores the file content in recieved.txt in the program directory
+    fp = fopen(fileName, "w"); // stores the file content in recieved.txt in the program directory
 
     if (fp == NULL) {
         printf("Error IN Opening File ");
@@ -28,7 +28,7 @@ void recvFile(int sockfd)
     printf("New File created is received.txt !! \n");
 }
 
-int main()
+int main(int argc, char **argv)
 {
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
@@ -45,7 +45,7 @@ int main()
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    servaddr.sin_addr.s_addr = inet_addr(argv[1]);
     servaddr.sin_port = htons(PORT);
 
     // connect the client socket to server socket
@@ -56,7 +56,7 @@ int main()
         printf("connected to the server..\n");
 
     // function for sending File
-    recvFile(sockfd);
+    recvFile(argv[2], sockfd);
 
     // close the socket
     close(sockfd);
