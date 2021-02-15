@@ -96,22 +96,27 @@ static const uint8_t PROGMEM pacman2[F_PMAN2 * W_PMAN2] =  // ghost pursued by a
   0x00, 0x42, 0xe7, 0xe7, 0xff, 0xff, 0x7e, 0x3c, 0x00, 0x00, 0x00, 0xfe, 0x73, 0xfb, 0x7f, 0xf3, 0x7b, 0xfe,
 };
 
-#define N_LAYERS 2
+#define N_LAYERS 4
+#define TEMP_LAYER 1
 #define BUF_LEN 200
 #define REQ_DELAY 10000
+#define TEMP_PIN A0
 char payloadBuffer[BUF_LEN];
 int k = 0;
 char *msgBuff[] = { // Filled with some overhead. But this is wrong. FIXME
-  "FormazioneXX", "{} giorni {} ore {} minutiXXX"
+  "FormazioneXX", "{} giorni {} ore {} minutiXXX",
+  "Temp", "24.6 CXXX"
 };
 
 unsigned long deltaR;
 
 void setup(void)
 {
+  pinMode(TEMP_PIN, INPUT);
+
   P.begin();
-  //P.displayText(curMessage, scrollAlign, scrollSpeed, scrollPause, scrollEffect, scrollEffect);
   P.setSpriteData(pacman1, W_PMAN1, F_PMAN1, pacman2, W_PMAN2, F_PMAN2);
+
   for (uint8_t i = 0; i < ARRAY_SIZE(catalog); i++)
   {
     catalog[i].speed *= P.getSpeed();
@@ -133,7 +138,7 @@ void setup(void)
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
 
-  deltaR = millis();
+  deltaR = 0;
 }
 
 void loop(void)
@@ -172,9 +177,12 @@ void loop(void)
       Serial.printf("[HTTP} Unable to connect\n");
     }
 
+
+    // Update temperature too
+    readTempToBuff();
+
     deltaR = millis();
   }
-
 
 
   // DISPLAY SECTION
@@ -222,9 +230,17 @@ void tokenize(char* line)
   while (pch != NULL) {
     strcpy(msgBuff[i], pch);
     i++;
-    if (i > N_LAYERS)
+    if (i > 2)
       break;
 
     pch = strtok(NULL, "+");
   }
+}
+
+void readTempToBuff() {
+  float temperature = (analogRead(TEMP_PIN) * (3300.0 / 1024.0)) / 10.0;
+  //Serial.println(temperature);
+
+  strcpy(msgBuff[TEMP_LAYER * 2], "Temp");
+  sprintf(msgBuff[TEMP_LAYER * 2 + 1], "%.1f C", temperature);
 }
