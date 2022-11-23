@@ -1,0 +1,54 @@
+.quizContainer {
+    max-width: 768px;
+  }
+  
+  .quizCard {
+    background-color: #fbe9e9;
+    color: darkred;
+  }
+  
+  .quizHeader {
+    min-height: 50px;
+    background-color: #efa9a9;
+  }
+  
+  .quizQuestion {
+    display: inline;
+  }
+  
+  .quizAnswer:hover {
+    background-color: DarkSlateBlue;
+    color: #fbe9e9;
+  }
+  
+  .darkRedBorder {
+    border-color: darkred !important;
+  }
+  
+  .cursorPointer {
+    cursor: pointer;
+  }
+  
+  .navColor {
+    background-color: darkred;
+    color: #fbe9e9;
+  }
+  
+  .givenAnswer {
+    background-color: DarkSlateBlue;
+    color: #fbe9e9;
+  }
+  
+  .correctAnswer {
+    background-color: ForestGreen;
+    color: #fbe9e9;
+  }
+  
+  .wrongAnswer {
+    background-color: FireBrick;
+    color: #fbe9e9;
+  }
+  
+  .adrPittograms {
+    width: 100%;
+  }
