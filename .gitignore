@@ -1,2 +1,3 @@
 secrets.h
 *.txt
+**.DS_Store
