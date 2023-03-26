@@ -1,0 +1,102 @@
+esphome:
+  name: power-display
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: "SoffittaAXSlow"
+  password: "BelinoInverso"
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.1.90
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.1.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
+captive_portal:
+
+switch:
+  - platform: gpio
+    pin: D8
+    name: "TestLED"
+    inverted: true
+    restore_mode: ALWAYS_ON 
+    
+sensor:
+  - platform: homeassistant
+    entity_id: sensor.shellyem_contatori_power_soffitta
+    id: soffitta_power
+  - platform: homeassistant
+    entity_id: sensor.shellem_contatori_power_tot
+    id: tot_power
+    
+font:
+  # gfonts://family[@weight]
+  - file: "gfonts://Roboto"
+    id: roboto
+    size: 12
+
+graph:
+  # Show bare-minimum auto-ranged graph
+  - id: simple_graph
+    duration: 1h
+    width: 84
+    height: 34
+    traces:
+      - sensor: soffitta_power
+        line_type: SOLID
+        line_thickness: 1
+      - sensor: tot_power
+        line_type: DOTTED
+        line_thickness: 1
+
+  # Show multi-trace graph
+  # - id: multi_temperature_graph
+    # duration: 1h
+    # x_grid: 10min
+    # y_grid: 1.0     # degC/div
+    # width: 151
+    # height: 51
+    # traces:
+      # - sensor: my_inside_temperature
+        # line_type: DASHED
+        # line_thickness: 2
+        # color: my_red
+      # - sensor: my_outside_temperature
+        # line_type: SOLID
+        # line_thickness: 3
+        # color: my_blue
+      # - sensor: my_beer_temperature
+        # line_type: DOTTED
+        # line_thickness: 2
+        # color: my_green    
+
+spi:
+  clk_pin: D0
+  mosi_pin: D1
+
+display:
+  - platform: pcd8544
+    reset_pin: D4
+    update_interval: 3s
+    cs_pin: D3
+    dc_pin: D2
+    contrast: 65
+    lambda: |-
+      it.printf(0, 0, id(roboto), "%.0fW", id(soffitta_power).state);
+      it.printf(40, 0, id(roboto), "%.0fW", id(tot_power).state);
+      it.graph(0, 14, id(simple_graph));
+    

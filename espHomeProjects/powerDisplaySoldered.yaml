@@ -1,0 +1,238 @@
+esphome:
+  name: power-display
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: "SoffittaAXSlow"
+  password: "BelinoInverso"
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.1.90
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.1.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
+output:
+  - platform: slow_pwm
+    pin: D3
+    id: buzzer
+    period: 5s
+    inverted: true
+    
+sensor:
+  - platform: homeassistant
+    entity_id: sensor.shellem_contatori_power_tot
+    id: tot_power
+  - platform: homeassistant
+    entity_id: sensor.shellyem_contatori_power_soffitta
+    id: soffitta_power    
+    
+# Example configuration entry
+sn74hc595:
+  - id: bar_595
+    data_pin: D0
+    clock_pin: D2
+    latch_pin: D1
+    sr_count: 1
+
+# Individual outputs
+switch:
+  - platform: gpio
+    id: bar_2
+    pin:
+      sn74hc595: bar_595
+      number: 0      
+  - platform: gpio
+    id: bar_9
+    pin:
+      sn74hc595: bar_595
+      number: 1
+  - platform: gpio
+    id: bar_8
+    pin:
+      sn74hc595: bar_595
+      number: 2
+  - platform: gpio
+    id: bar_7
+    pin:
+      sn74hc595: bar_595
+      number: 3 
+  - platform: gpio
+    id: bar_6
+    pin:
+      sn74hc595: bar_595
+      number: 4
+  - platform: gpio
+    id: bar_5
+    pin:
+      sn74hc595: bar_595
+      number: 5
+  - platform: gpio
+    id: bar_4
+    pin:
+      sn74hc595: bar_595
+      number: 6
+  - platform: gpio
+    id: bar_3
+    pin:
+      sn74hc595: bar_595
+      number: 7
+  - platform: gpio
+    pin: D7
+    id: bar_1    
+  - platform: gpio
+    pin: D8
+    id: bar_0
+
+spi:
+  clk_pin: D6
+  mosi_pin: D4
+
+display:
+  - platform: max7219
+    cs_pin: D5
+    num_chips: 1
+    intensity: 5
+    lambda: |-
+      it.printf("%4.0f%4.0f", id(soffitta_power).state, id(tot_power).state - id(soffitta_power).state);
+
+
+
+# Only specifying an id without a name will implicitly set these to internal
+binary_sensor:
+  - platform: analog_threshold
+    id: power_alert
+    sensor_id: tot_power
+    threshold: 3800
+    on_press:
+      then:
+        - output.set_level:
+            id: buzzer
+            level: 10%
+    on_release:
+      then:
+        - output.turn_off: buzzer
+  # Bar 0
+  - platform: analog_threshold
+    id: power_b0
+    sensor_id: tot_power
+    threshold: 390
+    on_press:
+      then:
+        - switch.turn_on: bar_0
+    on_release:
+      then:
+        - switch.turn_off: bar_0
+  # Bar 1
+  - platform: analog_threshold
+    id: power_b1
+    sensor_id: tot_power
+    threshold: 780
+    on_press:
+      then:
+        - switch.turn_on: bar_1
+    on_release:
+      then:
+        - switch.turn_off: bar_1
+  # Bar 2
+  - platform: analog_threshold
+    id: power_b2
+    sensor_id: tot_power
+    threshold: 1170
+    on_press:
+      then:
+        - switch.turn_on: bar_2
+    on_release:
+      then:
+        - switch.turn_off: bar_2
+  # Bar 3
+  - platform: analog_threshold
+    id: power_b3
+    sensor_id: tot_power
+    threshold: 1560
+    on_press:
+      then:
+        - switch.turn_on: bar_3
+    on_release:
+      then:
+        - switch.turn_off: bar_3
+  # Bar 4
+  - platform: analog_threshold
+    id: power_b4
+    sensor_id: tot_power
+    threshold: 1950
+    on_press:
+      then:
+        - switch.turn_on: bar_4
+    on_release:
+      then:
+        - switch.turn_off: bar_4
+  # Bar 5
+  - platform: analog_threshold
+    id: power_b5
+    sensor_id: tot_power
+    threshold: 2340
+    on_press:
+      then:
+        - switch.turn_on: bar_5
+    on_release:
+      then:
+        - switch.turn_off: bar_5
+  # Bar 6
+  - platform: analog_threshold
+    id: power_b6
+    sensor_id: tot_power
+    threshold: 2730
+    on_press:
+      then:
+        - switch.turn_on: bar_6
+    on_release:
+      then:
+        - switch.turn_off: bar_6
+  # Bar 7
+  - platform: analog_threshold
+    id: power_b7
+    sensor_id: tot_power
+    threshold: 3120
+    on_press:
+      then:
+        - switch.turn_on: bar_7
+    on_release:
+      then:
+        - switch.turn_off: bar_7
+  # Bar 8
+  - platform: analog_threshold
+    id: power_b8
+    sensor_id: tot_power
+    threshold: 3510
+    on_press:
+      then:
+        - switch.turn_on: bar_8
+    on_release:
+      then:
+        - switch.turn_off: bar_8
+  # Bar 9
+  - platform: analog_threshold
+    id: power_b9
+    sensor_id: tot_power
+    threshold: 3900
+    on_press:
+      then:
+        - switch.turn_on: bar_9
+    on_release:
+      then:
+        - switch.turn_off: bar_9        
