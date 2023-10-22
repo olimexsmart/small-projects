@@ -35,11 +35,14 @@ output:
     
 sensor:
   - platform: homeassistant
-    entity_id: sensor.shellem_contatori_power_tot
-    id: tot_power
+    entity_id: sensor.shellem_contatori_power_genitori
+    id: genitori_power
   - platform: homeassistant
     entity_id: sensor.shellyem_contatori_power_soffitta
-    id: soffitta_power    
+    id: soffitta_power  
+  - platform: homeassistant
+    entity_id: sensor.power_tot
+    id: tot_power        
     
 # Example configuration entry
 sn74hc595:
@@ -108,7 +111,7 @@ display:
     num_chips: 1
     intensity: 5
     lambda: |-
-      it.printf("%4.0f%4.0f", id(soffitta_power).state, id(tot_power).state - id(soffitta_power).state);
+      it.printf("%4.0f%4.0f", id(soffitta_power).state, id(genitori_power).state);
 
 
 
