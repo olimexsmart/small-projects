@@ -49,7 +49,7 @@ esp32_camera:
 
 switch:
   - platform: gpio
-    pin: GPIO13
+    pin: GPIO4
     inverted: true
     id: relayFiamma
     name: "Stufa Fiamma"
@@ -58,7 +58,7 @@ switch:
     - delay: 300ms
     - switch.turn_off: relayFiamma
   - platform: gpio
-    pin: GPIO4
+    pin: GPIO13
     inverted: true
     id: relayVentola
     name: "Stufa Ventola"
