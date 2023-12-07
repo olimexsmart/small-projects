@@ -16,8 +16,8 @@ ota:
   password: ""
 
 wifi:
-  ssid: "SoffittaAXSlow"
-  password: "BelinoInverso"
+  ssid: "Quarto"
+  password: "29d825e3ab"
 
   manual_ip:
     # Set this to the IP of the ESP
@@ -27,12 +27,20 @@ wifi:
     # The subnet of the network. 255.255.255.0 works for most home networks.
     subnet: 255.255.255.0
   
+button:
+  - platform: template
+    name: Apri Portone
+    id: pulsantePortone
+    on_press:
+      - switch.turn_on: relayPortone
+
 switch:
   - platform: gpio
     pin: GPIO0
     inverted: true
+    internal: true
     id: relayPortone
-    name: "Portone"
+    name: "Portone Relay"
     on_turn_on:
     - delay: 1500ms
     - switch.turn_off: relayPortone
