@@ -1,8 +1,9 @@
 
 esphome:
   name: stufa-control
-  platform: ESP32
-  board: esp32dev
+
+esp32:
+  board: esp32cam
 
 # Enable logging
 logger:
@@ -53,7 +54,6 @@ switch:
     inverted: true
     id: relayFiamma
     name: "Stufa Fiamma"
-    #icon: "mdi:gate"
     on_turn_on:
     - delay: 300ms
     - switch.turn_off: relayFiamma
@@ -62,7 +62,6 @@ switch:
     inverted: true
     id: relayVentola
     name: "Stufa Ventola"
-    #icon: "mdi:gate"
     on_turn_on:
     - delay: 500ms
     - switch.turn_off: relayVentola
