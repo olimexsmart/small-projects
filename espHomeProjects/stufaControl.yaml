@@ -48,12 +48,25 @@ esp32_camera:
   idle_framerate: 0.1fps
   max_framerate: 2fps
 
+button:
+  - platform: template
+    name: Stufa Fiamma
+    id: pulsanteFiamma
+    on_press:
+      - switch.turn_on: relayFiamma
+  - platform: template
+    name: Stufa Ventola
+    id: pulsanteVentola
+    on_press:
+      - switch.turn_on: relayVentola
+
 switch:
   - platform: gpio
     pin: GPIO4
     inverted: true
     id: relayFiamma
     name: "Stufa Fiamma"
+    internal: true
     on_turn_on:
     - delay: 300ms
     - switch.turn_off: relayFiamma
@@ -62,6 +75,7 @@ switch:
     inverted: true
     id: relayVentola
     name: "Stufa Ventola"
+    internal: true
     on_turn_on:
     - delay: 500ms
     - switch.turn_off: relayVentola
