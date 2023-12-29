@@ -1,0 +1,70 @@
+
+esphome:
+  name: insegna-o
+
+esp8266:
+  board: d1
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: "SoffittaAXSlow"
+  password: "BelinoInverso"
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.1.93
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.1.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
+# RGB component
+light:
+  - platform: rgb
+    name: "Insegna O"
+    red: output_red
+    green: output_green
+    blue: output_blue
+
+# RGB pins
+output:
+  - platform: esp8266_pwm
+    inverted: true
+    id: output_red
+    pin: D9
+  - platform: esp8266_pwm
+    inverted: true
+    id: output_green
+    pin: D8
+  - platform: esp8266_pwm
+    inverted: true
+    id: output_blue
+    pin: D10
+
+binary_sensor:
+  - platform: gpio
+    id: redButton
+    internal: true
+    on_press:
+      - homeassistant.service:
+          service: button.press
+          data:
+            entity_id: button.apri_portone
+    filters:
+      - delayed_on: 20ms
+      - delayed_off: 20ms
+    pin:
+      number: D11
+      inverted: true
+      mode:
+        input: true
+        pullup: true
