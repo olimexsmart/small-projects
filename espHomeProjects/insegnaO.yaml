@@ -68,3 +68,13 @@ binary_sensor:
       mode:
         input: true
         pullup: true
+  - platform: gpio
+    id: frontDoorOpen
+    name: Front Door
+    pin:
+      number: D3
+      inverted: true
+      mode:
+        input: true
+        pullup: true      
+
