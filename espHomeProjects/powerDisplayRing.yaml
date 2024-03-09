@@ -33,9 +33,9 @@ sensor:
     internal: true
     filters:
       - calibrate_linear:
-          # Map 100.0 (from sensor) to 255.0 (true value)
+          # Map 3900.0 (from sensor) to 255.0 (true value)
           - 0.0 -> 0.0
-          - 3900.0 -> 255.0
+          - 3900.0 -> 255.0 # 3900W is the max power output before forced disconnection
   
   - platform: homeassistant
     id: p_tot_number_on
@@ -43,26 +43,35 @@ sensor:
     internal: true
     filters:
       - calibrate_linear:
-          # Map 100.0 (from sensor) to 8.0 (true value)
+          # Map 3900.0 (from sensor) to 8.0 (true value)
           - 0.0 -> 0.0
           - 3900.0 -> 12.0
 
 light:
   - platform: neopixelbus
     type: GRB
-    variant: WS2812
-    pin: D3
+    pin: GPIO3
     num_leds: 12
-    id: ring_leds
+    variant: WS2812
+    method:
+      type: esp8266_dma    
     internal: True
-    effects:
+    id: led_ring
+    name: "LEDRing"
+    restore_mode: ALWAYS_ON
+    effects: 
       - addressable_lambda:
+          name: "Power level"
           update_interval: 50ms
           lambda: |-
-            for (int j = 0; j < 12; j++) {
-              if (id(p_tot_number_on).state > j) {
-                it[j] = ESPColor(256.0-(id(p_tot_color).state), id(p_tot_color).state, 0);
+            for (int i = 0; i < it.size(); i++) {
+              if (id(p_tot_number_on).state > i) {
+                it[i] = Color(255.0 - (id(p_tot_color).state), id(p_tot_color).state, 0);
               } else {
-                it[j] = ESPColor(0, 0, 0);
+                it[i] = Color(0, 0, 0);
               }
             }
+    on_turn_on:
+      - light.turn_on: 
+          id: led_ring
+          effect: "Power level"
