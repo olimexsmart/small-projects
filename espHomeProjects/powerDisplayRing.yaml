@@ -62,16 +62,41 @@ light:
     effects: 
       - addressable_lambda:
           name: "Power level"
-          update_interval: 50ms
+          update_interval: 10ms
           lambda: |-
-            for (int i = 0; i < it.size(); i++) {
-              if (id(p_tot_number_on).state > i) {
-                it[i] = Color(255.0 - (id(p_tot_color).state), id(p_tot_color).state, 0);
+            static int secCnt = 0;
+            static int offsetLED = 0;
+            /*
+            static int blueFade = 0;
+            static bool blueFlag = true;
+
+            if (blueFlag) {
+              blueFade += 1;
+              if(blueFade >= 100)
+                blueFlag = false;
+            } else {
+              blueFade -= 25;
+              if(blueFade <= 0)
+                blueFlag = true;              
+            }
+            */
+            secCnt++;
+            if(secCnt >= 100) {
+              secCnt = 0;
+              offsetLED++;
+              offsetLED %= it.size();
+            }
+            //ESP_LOGD("main", "offsetLED %d", offsetLED);
+            for (int i = offsetLED, k = 0; i < offsetLED + it.size(); i++, k++) {
+              int trueIndex = i % it.size();
+              if (id(p_tot_number_on).state > k) {
+                it[trueIndex] = Color(id(p_tot_color).state, 255 - id(p_tot_color).state, secCnt / 2);
               } else {
-                it[i] = Color(0, 0, 0);
+                it[trueIndex] = Color(0, 0, 0);
               }
             }
     on_turn_on:
       - light.turn_on: 
           id: led_ring
           effect: "Power level"
+          brightness: 50%
