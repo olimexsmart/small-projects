@@ -17,7 +17,7 @@ ota:
 
 wifi:
   ssid: "Quarto"
-  password: "29d825e3ab"
+  password: !secret wifi_pw_quarto
 
   manual_ip:
     # Set this to the IP of the ESP

@@ -17,7 +17,7 @@ ota:
 
 wifi:
   ssid: "SoffittaAXSlow"
-  password: "BelinoInverso"
+  password: !secret wifi_pw_soffitta
 
   manual_ip:
     # Set this to the IP of the ESP
