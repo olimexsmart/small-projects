@@ -13,6 +13,7 @@ api:
 
 ota:
   password: ""
+  platform: esphome
 
 wifi:
   ssid: "Quarto"

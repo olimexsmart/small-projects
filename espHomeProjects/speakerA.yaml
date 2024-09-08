@@ -1,0 +1,43 @@
+esphome:
+  name: speaker_a
+  platform: ESP32
+  board: esp32dev
+
+wifi:
+  ssid: "SoffittaAXSlow"
+  password: !secret wifi_pw_soffitta
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.1.95
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.1.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+  platform: esphome
+
+i2s_audio:
+  i2s_lrclk_pin: GPIO12  # WS/LRCK pin
+  i2s_bclk_pin: GPIO14   # Bit Clock pin
+
+# Media Player setup
+media_player:
+  - platform: i2s_audio
+    name: "SpeakerA"
+    dac_type: external
+    i2s_dout_pin: GPIO13   # Data Output pin
+    #i2s_sample_rate: 44100 # Set the sample rate (44.1 kHz, CD quality)
+    #external_dac_type: MAX98357A
+
