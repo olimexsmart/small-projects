@@ -5,10 +5,8 @@ esphome:
 esp8266:
   board: d1
 
-# Enable logging
 logger:
 
-# Enable Home Assistant API
 api:
   password: ""
 
@@ -21,11 +19,8 @@ wifi:
   password: !secret wifi_pw_soffitta
 
   manual_ip:
-    # Set this to the IP of the ESP
     static_ip: 192.168.1.93
-    # Set this to the IP address of the router. Often ends with .1
     gateway: 192.168.1.1
-    # The subnet of the network. 255.255.255.0 works for most home networks.
     subnet: 255.255.255.0
 
 # RGB component
@@ -52,6 +47,7 @@ output:
     pin: D10
 
 binary_sensor:
+  # Open main door button
   - platform: gpio
     id: redButton
     internal: true
@@ -69,6 +65,7 @@ binary_sensor:
       mode:
         input: true
         pullup: true
+  # Home door opening sensors
   - platform: gpio
     id: frontDoorOpen
     name: Front Door

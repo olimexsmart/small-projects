@@ -4,10 +4,8 @@ esphome:
 esp8266:
   board: nodemcuv2
 
-# Enable logging
 logger:
 
-# Enable Home Assistant API
 api:
   password: ""
 
@@ -20,11 +18,8 @@ wifi:
   password: !secret wifi_pw_soffitta
 
   manual_ip:
-    # Set this to the IP of the ESP
     static_ip: 192.168.1.90
-    # Set this to the IP address of the router. Often ends with .1
     gateway: 192.168.1.1
-    # The subnet of the network. 255.255.255.0 works for most home networks.
     subnet: 255.255.255.0
 
 output:
@@ -34,6 +29,7 @@ output:
     period: 5s
     inverted: true
     
+# Reading data coming from home assistant
 sensor:
   - platform: homeassistant
     entity_id: sensor.shellem_contatori_power_genitori
@@ -113,8 +109,6 @@ display:
     intensity: 5
     lambda: |-
       it.printf("%4.0f%4.0f", id(soffitta_power).state, id(genitori_power).state);
-
-
 
 # Only specifying an id without a name will implicitly set these to internal
 binary_sensor:

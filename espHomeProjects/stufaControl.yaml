@@ -5,10 +5,8 @@ esphome:
 esp32:
   board: esp32cam
 
-# Enable logging
 logger:
 
-# Enable Home Assistant API
 api:
   password: ""
 
@@ -21,14 +19,11 @@ wifi:
   password: !secret wifi_pw_soffitta
 
   manual_ip:
-    # Set this to the IP of the ESP
     static_ip: 192.168.1.91
-    # Set this to the IP address of the router. Often ends with .1
     gateway: 192.168.1.1
-    # The subnet of the network. 255.255.255.0 works for most home networks.
     subnet: 255.255.255.0
   
-
+# Camera
 esp32_camera:
   external_clock:
     pin: GPIO0
@@ -38,8 +33,7 @@ esp32_camera:
     scl: GPIO27
   data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
 
-  # the order of the data_pins is significant, don't mix up the order
-
+  # The order of the data_pins is significant, don't mix up the order
   vsync_pin: GPIO25
   href_pin: GPIO23
   pixel_clock_pin: GPIO22
@@ -49,6 +43,7 @@ esp32_camera:
   idle_framerate: 0.1fps
   max_framerate: 2fps
 
+# Exposing virtual buttons to home assistant
 button:
   - platform: template
     name: Stufa Fiamma
@@ -61,6 +56,7 @@ button:
     on_press:
       - switch.turn_on: relayVentola
 
+# Connecting relay board
 switch:
   - platform: gpio
     pin: GPIO4
