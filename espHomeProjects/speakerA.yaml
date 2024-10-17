@@ -6,6 +6,7 @@ esphome:
 wifi:
   ssid: "SoffittaAXSlow"
   password: !secret wifi_pw_soffitta
+  power_save_mode: none
 
   manual_ip:
     static_ip: 192.168.1.95
@@ -23,6 +24,11 @@ ota:
   password: ""
   platform: esphome
 
+output:
+  - platform: gpio
+    pin: GPIO27
+    id: PAM8302_mute
+
 i2s_audio:
   i2s_lrclk_pin: GPIO12  # WS/LRCK pin
   i2s_bclk_pin: GPIO14   # Bit Clock pin
@@ -33,7 +39,16 @@ media_player:
     name: "SpeakerA"
     dac_type: external
     i2s_dout_pin: GPIO13   # Data Output pin
+    on_announcement:
+      then:
+      - output.turn_on: PAM8302_mute
+    on_play:
+      then:
+      - output.turn_on: PAM8302_mute
+    on_idle:
+      then:
+      - output.turn_off: PAM8302_mute
 
-# TODO add output pin that deactivates amplifier
-# TODO add buzzer and LEDs
+
+# TODO add LEDs
 
