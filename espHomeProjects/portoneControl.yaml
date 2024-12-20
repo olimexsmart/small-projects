@@ -18,10 +18,10 @@ wifi:
   ssid: "Quarto"
   password: !secret wifi_pw_quarto
 
-  manual_ip:
-    static_ip: 192.168.1.92
-    gateway: 192.168.1.1
-    subnet: 255.255.255.0
+  # manual_ip:
+  #   static_ip: 192.168.1.92
+  #   gateway: 192.168.1.1
+  #   subnet: 255.255.255.0
 
 # Relay board control
 button:
