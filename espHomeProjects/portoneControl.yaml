@@ -15,7 +15,7 @@ ota:
   platform: esphome
 
 wifi:
-  ssid: "Quarto"
+  ssid: !secret wifi_name_quarto
   password: !secret wifi_pw_quarto
 
   # manual_ip:

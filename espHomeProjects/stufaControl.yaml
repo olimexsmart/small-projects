@@ -15,7 +15,7 @@ ota:
   platform: esphome
 
 wifi:
-  ssid: "SoffittaAXSlow"
+  ssid: !secret wifi_name_soffitta
   password: !secret wifi_pw_soffitta
 
   # manual_ip:

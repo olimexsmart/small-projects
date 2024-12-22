@@ -4,7 +4,7 @@ esphome:
   board: esp32dev
 
 wifi:
-  ssid: "SoffittaAXSlow"
+  ssid: !secret wifi_name_soffitta
   password: !secret wifi_pw_soffitta
   power_save_mode: none
 
