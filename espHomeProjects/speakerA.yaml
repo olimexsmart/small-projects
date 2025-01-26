@@ -8,11 +8,6 @@ wifi:
   password: !secret wifi_pw_soffitta
   power_save_mode: none
 
-  # manual_ip:
-  #   static_ip: 192.168.1.95
-  #   gateway: 192.168.1.1
-  #   subnet: 255.255.255.0
-
 captive_portal:
 
 logger:
