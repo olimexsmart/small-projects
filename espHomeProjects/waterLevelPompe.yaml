@@ -26,12 +26,17 @@ sensor:
   - platform: "jsn_sr04t"
     name: "Livello Intercapedine"
     id: livello_intercapedine
+    update_interval: 1s
     filters:
-      - quantile:
-          window_size: 10
-          send_every: 50
-          send_first_at: 1
-          quantile: .9
+      - clamp:
+          min_value: 0.4
+          max_value: 3.0
+          ignore_out_of_range: true
+      - sliding_window_moving_average:
+          window_size: 7
+          send_every: 3 # TODO slow down to 10sec
+          send_first_at: 3
+          # quantile: .9
 
 display:
   platform: tm1637
