@@ -27,6 +27,8 @@ sensor:
     name: "Livello Intercapedine"
     id: livello_intercapedine
     update_interval: 1s
+    on_value:
+    - switch.turn_on: new_reading
     filters:
       - offset: -1.34
       - multiply: -1
@@ -39,6 +41,80 @@ sensor:
           send_every: 3 # TODO slow down to 10sec
           send_first_at: 3
           # quantile: .9
+  # Pompa UNO
+  - platform: homeassistant
+    entity_id: sensor.pompaunotempo
+    id: pompaunotempo
+    on_value_range:
+      - below: 0.12 # 5 minutes (0.12 * 60)
+        then:
+          - logger.log: "Pompa 1 attivata"
+          - output.set_level:
+              id: pompa_1_alarm
+              level: 50%
+      - above: 0.12
+        then:
+          - output.turn_off: pompa_1_alarm
+  # Pompa DUE
+  - platform: homeassistant
+    entity_id: sensor.pompaduetempo
+    id: pompaduetempo
+    on_value_range:
+      - below: 0.12
+        then:
+          - output.set_level:
+              id: pompa_2_alarm
+              level: 50%
+      - above: 0.12
+        then:
+          - output.turn_off: pompa_2_alarm
+
+binary_sensor: 
+  - platform: homeassistant
+    entity_id: binary_sensor.livello_acqua_allarme
+    id: livello_acqua_allarme
+    on_state:
+      - if:
+          condition:
+            - binary_sensor.is_on: livello_acqua_allarme
+          then:
+            - output.set_level:
+                id: water_level_alarm
+                level: 50%
+          else:
+            - output.turn_off: water_level_alarm     
+
+# Heartbeat at new value sent to HA
+switch:
+  - platform: gpio
+    pin: D4
+    inverted: false
+    internal: true
+    id: new_reading
+    name: "New Reading"
+    on_turn_on:
+    - delay: 200ms
+    - switch.turn_off: new_reading
+
+# Water level alarm, from HA (this way the threshold can be changed without flashing)
+# Pompa 1 and 2 alarm, if not activated for too long
+output:
+  - platform: slow_pwm
+    pin: D3
+    id: water_level_alarm
+    period: 1s
+    inverted: false
+  - platform: slow_pwm
+    pin: D8
+    id: pompa_1_alarm
+    period: 1s
+    inverted: false
+  - platform: slow_pwm
+    pin: D7
+    id: pompa_2_alarm
+    period: 1s
+    inverted: false
+  
 
 display:
   platform: tm1637
