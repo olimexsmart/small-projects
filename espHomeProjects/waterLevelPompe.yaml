@@ -37,9 +37,9 @@ sensor:
           max_value: 1.5
           ignore_out_of_range: true
       - sliding_window_moving_average:
-          window_size: 7
-          send_every: 3 # TODO slow down to 10sec
-          send_first_at: 3
+          window_size: 30
+          send_every: 30
+          send_first_at: 30
           # quantile: .9
   # Pompa UNO
   - platform: homeassistant
@@ -55,6 +55,7 @@ sensor:
       - above: 0.12
         then:
           - output.turn_off: pompa_1_alarm
+
   # Pompa DUE
   - platform: homeassistant
     entity_id: sensor.pompaduetempo
@@ -105,12 +106,12 @@ output:
     period: 1s
     inverted: false
   - platform: slow_pwm
-    pin: D8
+    pin: D7
     id: pompa_1_alarm
     period: 1s
     inverted: false
   - platform: slow_pwm
-    pin: D7
+    pin: D8
     id: pompa_2_alarm
     period: 1s
     inverted: false
