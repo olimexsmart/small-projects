@@ -37,18 +37,22 @@ void resetScreen() {
   lineCounter = 0;
 }
 
+void digestCommand() {
+
+}
+
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer *pServer) {
     deviceConnected = true;
     Serial.println("Device CONNECTED");
     resetScreen();
-    writeLineOnScreen("CONNECTED");
+    // writeLineOnScreen("CONNECTED");
   };
 
   void onDisconnect(BLEServer *pServer) {
     deviceConnected = false;
     Serial.println("Device DISCONNECTED");
-    writeLineOnScreen("DISCONNECTED");
+    // writeLineOnScreen("DISCONNECTED");
   };
 };
 
@@ -60,17 +64,21 @@ class MyCallbacks : public BLECharacteristicCallbacks {
       for (int i = 0; i < val.length(); i++)
         Serial.print(val[i]);
       Serial.println();
-      // Check for notification enable
-      if (val == "NOTIFY_ON") {
-        notifyEnable = true;
-      } else if (val == "NOTIFY_OFF") {
-        notifyEnable = false;
-      } else {
-        // Saving received value for the read
-        memset(strData, '\0', STR_DATA_LEN);
-        strncpy(strData, val.c_str(), STR_DATA_LEN);
-      }
+      memset(strData, '\0', STR_DATA_LEN);
+      strncpy(strData, val.c_str(), STR_DATA_LEN);
       writeLineOnScreen(val.c_str());
+
+
+      // // Check for notification enable
+      // if (val == "NOTIFY_ON") {
+      //   notifyEnable = true;
+      // } else if (val == "NOTIFY_OFF") {
+      //   notifyEnable = false;
+      // } else {
+      //   // Saving received value for the read
+      //   memset(strData, '\0', STR_DATA_LEN);
+      //   strncpy(strData, val.c_str(), STR_DATA_LEN);
+      // }
       // preferences.putString("strData", strData); // This saves data (not used)
     }
   }
@@ -111,7 +119,7 @@ void setup() {
 
 
 
-  BLEDevice::init("MyESP32");
+  BLEDevice::init("T-VBNFZAGZEXOJSIRO");
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
 
@@ -146,7 +154,6 @@ void setup() {
 void loop() {
   // notify changed value
   if (deviceConnected && notifyEnable) {
-    notifyCounter++;
     sprintf(strDataRead, "%s_N_%i", strData, notifyCounter);
     pCharacteristic->setValue((uint8_t *)&strDataRead, strlen(strDataRead));
     pCharacteristic->notify();

@@ -14,8 +14,8 @@ ota:
   platform: esphome
 
 wifi:
-  ssid: !secret wifi_name_garage
-  password: !secret wifi_pw_garage
+  ssid: !secret wifi_name_garage_fuori
+  password: !secret wifi_pw_garage_fuori
 
 uart:
   tx_pin: GPIO14 # D5
