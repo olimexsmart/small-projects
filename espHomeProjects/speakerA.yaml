@@ -1,7 +1,11 @@
 esphome:
   name: speaker_a
-  platform: ESP32
+
+esp32:
   board: esp32dev
+  framework:
+    type: arduino
+    #platform_version: https://github.com/swoboda1337/platform-espressif32.git#54_03_21_3
 
 wifi:
   ssid: !secret wifi_name_soffitta

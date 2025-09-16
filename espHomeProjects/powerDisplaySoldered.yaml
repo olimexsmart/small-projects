@@ -27,14 +27,14 @@ output:
 # Reading data coming from home assistant
 sensor:
   - platform: homeassistant
-    entity_id: sensor.shellem_contatori_power_genitori
-    id: genitori_power
+    entity_id: sensor.shellyplug_solar_power
+    id: solar_power
   - platform: homeassistant
-    entity_id: sensor.shellyem_contatori_power_soffitta
-    id: soffitta_power  
+    entity_id: sensor.contatori_power_settimo
+    id: settimo_power  
   - platform: homeassistant
-    entity_id: sensor.power_tot
-    id: tot_power        
+    entity_id: sensor.shellyem_contatori_power_complessivo
+    id: complessivo_power        
     
 # Example configuration entry
 sn74hc595:
@@ -103,13 +103,13 @@ display:
     num_chips: 1
     intensity: 5
     lambda: |-
-      it.printf("%4.0f%4.0f", id(soffitta_power).state, id(genitori_power).state);
+      it.printf("%4.0f%4.0f", id(settimo_power).state, id(complessivo_power).state);
 
 # Only specifying an id without a name will implicitly set these to internal
 binary_sensor:
   - platform: analog_threshold
     id: power_alert
-    sensor_id: tot_power
+    sensor_id: complessivo_power
     threshold: 3800
     on_press:
       then:
@@ -122,8 +122,8 @@ binary_sensor:
   # Bar 0
   - platform: analog_threshold
     id: power_b0
-    sensor_id: tot_power
-    threshold: 390
+    sensor_id: solar_power
+    threshold: 30
     on_press:
       then:
         - switch.turn_on: bar_0
@@ -133,8 +133,8 @@ binary_sensor:
   # Bar 1
   - platform: analog_threshold
     id: power_b1
-    sensor_id: tot_power
-    threshold: 780
+    sensor_id: solar_power
+    threshold: 60
     on_press:
       then:
         - switch.turn_on: bar_1
@@ -144,8 +144,8 @@ binary_sensor:
   # Bar 2
   - platform: analog_threshold
     id: power_b2
-    sensor_id: tot_power
-    threshold: 1170
+    sensor_id: solar_power
+    threshold: 90
     on_press:
       then:
         - switch.turn_on: bar_2
@@ -155,8 +155,8 @@ binary_sensor:
   # Bar 3
   - platform: analog_threshold
     id: power_b3
-    sensor_id: tot_power
-    threshold: 1560
+    sensor_id: solar_power
+    threshold: 120
     on_press:
       then:
         - switch.turn_on: bar_3
@@ -166,8 +166,8 @@ binary_sensor:
   # Bar 4
   - platform: analog_threshold
     id: power_b4
-    sensor_id: tot_power
-    threshold: 1950
+    sensor_id: solar_power
+    threshold: 150
     on_press:
       then:
         - switch.turn_on: bar_4
@@ -177,8 +177,8 @@ binary_sensor:
   # Bar 5
   - platform: analog_threshold
     id: power_b5
-    sensor_id: tot_power
-    threshold: 2340
+    sensor_id: solar_power
+    threshold: 180
     on_press:
       then:
         - switch.turn_on: bar_5
@@ -188,8 +188,8 @@ binary_sensor:
   # Bar 6
   - platform: analog_threshold
     id: power_b6
-    sensor_id: tot_power
-    threshold: 2730
+    sensor_id: solar_power
+    threshold: 210
     on_press:
       then:
         - switch.turn_on: bar_6
@@ -199,8 +199,8 @@ binary_sensor:
   # Bar 7
   - platform: analog_threshold
     id: power_b7
-    sensor_id: tot_power
-    threshold: 3120
+    sensor_id: solar_power
+    threshold: 240
     on_press:
       then:
         - switch.turn_on: bar_7
@@ -210,8 +210,8 @@ binary_sensor:
   # Bar 8
   - platform: analog_threshold
     id: power_b8
-    sensor_id: tot_power
-    threshold: 3510
+    sensor_id: solar_power
+    threshold: 270
     on_press:
       then:
         - switch.turn_on: bar_8
@@ -221,8 +221,8 @@ binary_sensor:
   # Bar 9
   - platform: analog_threshold
     id: power_b9
-    sensor_id: tot_power
-    threshold: 3900
+    sensor_id: solar_power
+    threshold: 300
     on_press:
       then:
         - switch.turn_on: bar_9
