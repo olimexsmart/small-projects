@@ -14,32 +14,54 @@ ota:
   platform: esphome
 
 wifi:
-  ssid: !secret wifi_name_quarto
-  password: !secret wifi_pw_quarto
+  networks:
+  - ssid: !secret wifi_name_quarto
+    password: !secret wifi_pw_quarto
+  - ssid: !secret wifi_name_soffitta
+    password: !secret wifi_pw_soffitta
 
 sensor:
   - platform: homeassistant
     id: p_tot_color
-    entity_id: sensor.power_tot
+    entity_id: sensor.shellyem_contatori_power_complessivo
     internal: true
     filters:
       - calibrate_linear:
-          # Map 3900.0 (from sensor) to 255.0 (true value)
+          # Map 3900.0 (from sensor) to 255.0 (LED value)
           - 0.0 -> 0.0
           - 3900.0 -> 255.0 # 3900W is the max power output before forced disconnection
+      - clamp:
+          min_value: 0
+          max_value: 255
   
   - platform: homeassistant
     id: p_tot_number_on
-    entity_id: sensor.power_tot
+    entity_id: sensor.shellyem_contatori_power_complessivo
     internal: true
     filters:
       - calibrate_linear:
-          # Map 3900.0 (from sensor) to 8.0 (true value)
+          # Map 3900.0 (from sensor) to 12.0 (LED value)
           - 0.0 -> 0.0
           - 3900.0 -> 12.0
+      - clamp:
+          min_value: 0
+          max_value: 12          
 
   - platform: homeassistant
-    entity_id: sensor.power_tot
+    id: p_solar_number_on
+    entity_id: sensor.shellyplug_solar_power
+    internal: true
+    filters:
+      - calibrate_linear:
+          # Map 330.0 (from sensor) to 3.0 (LED value)
+          - 0.0 -> 0.0
+          - 300.0 -> 3.0
+      - clamp:
+          min_value: 0
+          max_value: 3          
+
+  - platform: homeassistant
+    entity_id: sensor.shellyem_contatori_power_complessivo
     id: tot_power    
 
 binary_sensor:
@@ -85,7 +107,6 @@ light:
           name: "Power level"
           update_interval: 10ms
           lambda: |-
-            // TODO blue color could be used in the future for solar production
             // Every second change starting LED on the ring
             static int secCnt = 0;
             static int offsetLED = 0;
@@ -98,10 +119,18 @@ light:
       
             for (int i = offsetLED, k = 0; i < offsetLED + it.size(); i++, k++) {
               int trueIndex = i % it.size();
-              if (id(p_tot_number_on).state > k) {
-                it[trueIndex] = Color(id(p_tot_color).state, 255 - id(p_tot_color).state, 0);
+
+              int solarOn = 0;
+              if(id(p_solar_number_on).state > k) {
+                solarOn = 255;
               } else {
-                it[trueIndex] = Color(0, 0, 0); 
+                solarOn = 0;
+              }
+
+              if (id(p_tot_number_on).state > k) {
+                it[trueIndex] = Color(id(p_tot_color).state, 255 - id(p_tot_color).state, solarOn);
+              } else {
+                it[trueIndex] = Color(0, 0, solarOn); 
               }
             }
     on_turn_on:
@@ -109,6 +138,3 @@ light:
           id: led_ring
           effect: "Power level"
           brightness: 25%
-          # brightness: !lambda |-
-          # // output value must be in range 0 - 1.0
-          # return id(some_sensor).state / 100.0;
