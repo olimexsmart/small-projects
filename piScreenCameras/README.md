@@ -10,15 +10,18 @@ A RaspberryPi with a old screen HAT that displays video feeds from surveillance 
     python3 -m venv screen-venv/
     source ~/screen-venv/bin/activate
     ```
+55. Install system libraries
+    ```
+    sudo apt install libgfortran5 libopenblas0-pthread libdeflate0 libbz2-1.0 libstdc++6 libzstd1 libjpeg62-turbo libxau6 liblerc4 zlib1g liblcms2-2 libtiff6 libopenjp2-7 liblzma5 libgcc-s1 libwebpdemux2 libfreetype6 libxdmcp6 libwebp7 libwebpmux3 libc6 libxcb1 libsharpyuv0 libbrotli1 libjbig0 libpng16-16t64
+    ```
 4. Install the required Python packages.
     ```bash
-    pip install adafruit-circuitpython-rgb-display requests RPi.GPIO
-    pip install --no-cache-dir pillow
+    pip install adafruit-circuitpython-rgb-display requests RPi.GPIO numpy pillow lgpio gpiozero
     ```
 5. Copy the Python script in the virtual environment
 99. Create a `camera_token.txt` file with just the HomeAssistant HTTP Bearer token
 6. Copy the bash script into the home folder (or whatever)
-7. Make the bash script executable with `sudo chmod +x launch-script.sh`
+7. Make the bash script executable with `sudo chmod +x run-screen-camera.sh`
 8. Create a systemd service: `sudo nano /etc/systemd/system/camera-screen.service`
 9. And paste there:
     ```ini
@@ -29,12 +32,11 @@ A RaspberryPi with a old screen HAT that displays video feeds from surveillance 
 
     [Service]
     Type=simple
-    User=pi
-    WorkingDirectory=/home/pi
-    ExecStart=/home/pi/run-camera.sh
+    User=olli
+    WorkingDirectory=/home/olli
+    ExecStart=/home/olli/run-screen-camera.sh
     Restart=always
     RestartSec=5
-
     # Give access to GPIO & SPI
     Environment=PYTHONUNBUFFERED=1
 
@@ -46,5 +48,8 @@ A RaspberryPi with a old screen HAT that displays video feeds from surveillance 
     sudo systemctl enable camera-screen.service
     sudo systemctl start camera-screen.service
     sudo systemctl status camera-screen.service
+
+    # To stop:
+    sudo systemctl stop camera-screen.service
     ```
 
