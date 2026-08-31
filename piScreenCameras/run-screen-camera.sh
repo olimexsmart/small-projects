@@ -1,6 +1,7 @@
 #!/bin/bash
-# Activate virtual environment
-source /home/olli/screen-venv/bin/activate
+set -euo pipefail
 
-# Run your Python script
-python /home/olli/display_camera_buttons.py
+PROJECT_DIR="/home/olli/piScreenCameras"
+VENV_PYTHON="/home/olli/screen-venv/bin/python"
+
+exec "$VENV_PYTHON" "$PROJECT_DIR/display_camera_buttons.py"
