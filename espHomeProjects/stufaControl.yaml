@@ -5,27 +5,34 @@ esphome:
 esp32:
   board: esp32cam
 
+psram:
+
 logger:
 
+i2c:
+  - id: camera_i2c
+    sda: GPIO26
+    scl: GPIO27
+
 api:
-  password: ""
+  encryption:
+    key: !secret api_encryption_key
 
 ota:
   password: ""
   platform: esphome
 
 wifi:
-  ssid: !secret wifi_name_soffitta
-  password: !secret wifi_pw_soffitta
+  networks:
+    - ssid: !secret wifi_name_soffitta
+      password: !secret wifi_pw_soffitta
   
 # Camera
 esp32_camera:
   external_clock:
     pin: GPIO0
     frequency: 20MHz
-  i2c_pins:
-    sda: GPIO26
-    scl: GPIO27
+  i2c_id: camera_i2c
   data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
 
   # The order of the data_pins is significant, don't mix up the order

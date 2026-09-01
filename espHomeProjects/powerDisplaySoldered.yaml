@@ -7,15 +7,17 @@ esp8266:
 logger:
 
 api:
-  password: ""
+  encryption:
+    key: !secret api_encryption_key
 
 ota:
   password: ""
   platform: esphome
 
 wifi:
-  ssid: !secret wifi_name_soffitta
-  password: !secret wifi_pw_soffitta
+  networks:
+    - ssid: !secret wifi_name_soffitta
+      password: !secret wifi_pw_soffitta
 
 output:
   - platform: slow_pwm
@@ -228,4 +230,4 @@ binary_sensor:
         - switch.turn_on: bar_9
     on_release:
       then:
-        - switch.turn_off: bar_9        
+        - switch.turn_off: bar_9
