@@ -1,0 +1,40 @@
+
+esphome:
+  name: cancello-control
+
+esp8266:
+  board: esp01_1m
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  password: ""
+  platform: esphome
+
+wifi:
+  networks:
+    - ssid: !secret wifi_name_garage_fuori
+      password: !secret wifi_pw_garage_fuori
+
+# Relay board control
+button:
+  - platform: template
+    name: Apri Cancello
+    id: pulsanteCancello
+    on_press:
+      - switch.turn_on: relayCancello
+
+switch:
+  - platform: gpio
+    pin: GPIO0
+    inverted: true
+    internal: true
+    id: relayCancello
+    name: "Cancello Relay"
+    on_turn_on:
+    - delay: 3000ms
+    - switch.turn_off: relayCancello
