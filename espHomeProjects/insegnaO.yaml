@@ -62,6 +62,24 @@ binary_sensor:
       mode:
         input: true
         pullup: true
+  # Open gate button
+  - platform: gpio
+    id: redButton2
+    internal: true
+    on_press:
+      - homeassistant.service:
+          service: button.press
+          data:
+            entity_id: button.cancello_control_apri_cancello
+    filters:
+      - delayed_on: 20ms
+      - delayed_off: 20ms
+    pin:
+      number: D6
+      inverted: true
+      mode:
+        input: true
+        pullup: true
   # Home door opening sensors
   - platform: gpio
     id: frontDoorOpen
