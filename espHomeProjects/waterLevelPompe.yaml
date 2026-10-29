@@ -19,6 +19,23 @@ wifi:
     - ssid: !secret wifi_name_garage_fuori
       password: !secret wifi_pw_garage_fuori
 
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Europe/Rome
+    on_time:
+      - seconds: 0
+        minutes: 0
+        hours: 3
+        then:
+          - logger.log: "Scheduled daily reboot at 03:00"
+          - button.press: daily_reboot
+
+button:
+  - platform: restart
+    id: daily_reboot
+    name: "Daily Restart"
+
 uart:
   tx_pin: GPIO14 # D5
   rx_pin: GPIO12 # D6
